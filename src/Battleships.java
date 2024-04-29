@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.InputMismatchException;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -82,7 +83,8 @@ public class Battleships {
     }
 
     private void playGame(String[] args) throws IOException {
-        if ((args.length != 2 && Boolean.parseBoolean(args[0])) ||
+        if (args.length == 0 || !(Objects.equals(args[0], "true") || Objects.equals(args[0], "false")) ||
+                (args.length != 2 && Boolean.parseBoolean(args[0])) ||
                 (args.length != 3 && !Boolean.parseBoolean(args[0]))){
             System.out.println("Usage: java Battleships <isServer = true> <port> OR");
             System.out.println("Usage: java Battleships <isServer = false> <port> <ip>");
@@ -113,9 +115,16 @@ public class Battleships {
                 System.out.println("Opponent's board:");
                 printBoard(opponentBoard);
                 System.out.print("Enter row (0-9): ");
-                int x = scanner.nextInt();
-                System.out.print("Enter column (0-9): ");
-                int y = scanner.nextInt();
+                int x;
+                int y;
+                try {
+                    x = scanner.nextInt();
+                    System.out.print("Enter column (0-9): ");
+                    y = scanner.nextInt();
+                } catch (InputMismatchException e){
+                    System.out.println("Invalid Character");
+                    continue;
+                }
 
                 if (!isValidMove(x, y)) {
                     System.out.println("Invalid move, try again.");
